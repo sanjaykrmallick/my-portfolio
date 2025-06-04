@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image"; // Import the Image component for optimized image handling
-import { Mail, Linkedin, Sun, Moon, Github, Code, Cloud, Server, Users, Award, Zap, HardDrive, Database, GitBranch, ShieldCheck, Clock, Lightbulb, TrendingUp, BarChart2, Briefcase } from "lucide-react"; // Importing a wider range of icons for richer visual representation
+import { Mail, Linkedin, Sun, Moon, Github, Code, Cloud, Server, Users, Award, Zap, HardDrive, Database, GitBranch, ShieldCheck, Clock, Lightbulb, TrendingUp, BarChart2, Briefcase, Calendar, MessageSquare, User, Send } from "lucide-react"; // Importing a wider range of icons for richer visual representation
 import { motion } from "framer-motion"; // For smooth and engaging animations
 
 export default function Home() {
@@ -10,6 +10,14 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(() => {
     return true; // Default to dark mode for a sleek initial experience
   });
+
+  // State for contact form
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const [formStatus, setFormStatus] = useState(''); // 'success', 'error', or ''
 
   // Effect to apply or remove the 'dark' class on the document element
   useEffect(() => {
@@ -26,6 +34,44 @@ export default function Home() {
   const toggleDarkMode = () => {
     setDarkMode(prevMode => !prevMode);
   };
+
+  // Handle form input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setFormStatus('sending'); // Indicate sending state
+
+    // Simulate API call for sending email
+    // In a real application, you would send this data to a backend API endpoint
+    // For example:
+    // const response = await fetch('/api/contact', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(formData)
+    // });
+    // if (response.ok) {
+    //   setFormStatus('success');
+    //   setFormData({ name: '', email: '', message: '' }); // Clear form
+    // } else {
+    //   setFormStatus('error');
+    // }
+
+    // Simulating a delay for demonstration
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    // For demonstration, always show success
+    setFormStatus('success');
+    setFormData({ name: '', email: '', message: '' }); // Clear form
+
+    // Optionally clear status after a few seconds
+    setTimeout(() => setFormStatus(''), 5000);
+  };
+
 
   // Animation variants for section entrances
   const sectionVariants = {
@@ -156,6 +202,44 @@ export default function Home() {
                 <span>5+ Years Experience</span>
               </motion.div>
             </div>
+          </div>
+        </motion.section>
+
+        {/* Experience Section: Complements your resume with deeper storytelling. */}
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={sectionVariants}
+          className="space-y-10 p-8 md:p-16 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700"
+        >
+          <h2 className="text-5xl font-bold text-gray-800 dark:text-gray-100 text-center mb-10">Experience</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {/* Experience Card: Logic Square Technologies */}
+            <motion.div variants={itemVariants} className="bg-gray-50 dark:bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 group flex flex-col h-full">
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 mb-2">Senior Software Developer, Logic Square Technologies</h3>
+              <p className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-4 flex items-center gap-2">
+                <Calendar size={20} /> Sep 2020 – Apr 2025
+              </p>
+              <ul className="list-disc list-inside space-y-2 text-lg text-gray-700 dark:text-gray-300 leading-relaxed flex-grow">
+                <li>Promoted from SDE-1 to Senior Backend Developer for consistent delivery, technical leadership, and ownership of complex systems.</li>
+                <li>Designed and scaled microservices for 100K+ users, improving API performance by 35% with Redis caching and MongoDB indexing.</li>
+                <li>Reduced AWS costs by 15% and deployment time by 66% by implementing Auto Scaling, EC2 optimization, and CI/CD pipelines.</li>
+                <li>Led a team of 3 developers; delivered real-time features, secure payments (Stripe/Square/Humbolt), calendar sync, and SEO-ready white-label platforms.</li>
+              </ul>
+            </motion.div>
+            {/* Experience Card: Mediakind */}
+            <motion.div variants={itemVariants} className="bg-gray-50 dark:bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 group flex flex-col h-full">
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 mb-2">Software Intern, Mediakind</h3>
+              <p className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-4 flex items-center gap-2">
+                <Calendar size={20} /> Jun 2019 – Jan 2020
+              </p>
+              <ul className="list-disc list-inside space-y-2 text-lg text-gray-700 dark:text-gray-300 leading-relaxed flex-grow">
+                <li>Improved Chromecast stability through 25+ test cases and BVTs for 3 product lines.</li>
+                <li>Resolved 15+ production issues alongside senior developers, increasing feature release rate by 20%.</li>
+                <li>Documented internal tools, improving the onboarding experience for new developers.</li>
+              </ul>
+            </motion.div>
           </div>
         </motion.section>
 
@@ -298,7 +382,7 @@ export default function Home() {
           </div>
         </motion.section>
 
-        {/* Contact Section: Provides contact information and links. */}
+        {/* Contact Section: Makes it easy to reach you, now with a form. */}
         <motion.section
           initial="hidden"
           whileInView="visible"
@@ -308,26 +392,103 @@ export default function Home() {
         >
           <h2 className="text-5xl font-bold text-gray-800 dark:text-gray-100 mb-10">Get in Touch</h2>
           <p className="text-xl text-gray-700 dark:text-gray-300 mb-8">Have an opportunity or idea to discuss? Let’s talk.</p>
-          <div className="flex flex-wrap justify-center gap-8 mt-6">
-            {/* Email Link */}
-            <motion.a
-              href="mailto:sanjay.kr.mallick94@gmail.com"
-              className="flex items-center gap-3 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-semibold text-xl transform hover:scale-105 transition-all duration-300 bg-gray-100 dark:bg-gray-700 py-4 px-8 rounded-full shadow-md"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Mail size={28} /> sanjay.kr.mallick94@gmail.com
-            </motion.a>
-            {/* LinkedIn Link */}
-            <motion.a
-              href="https://linkedin.com/in/sanjay-kumar-4738b91b1"
-              target="_blank"
-              className="flex items-center gap-3 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-semibold text-xl transform hover:scale-105 transition-all duration-300 bg-gray-100 dark:bg-gray-700 py-4 px-8 rounded-full shadow-md"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Linkedin size={28} /> LinkedIn
-            </motion.a>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+            {/* Contact Information */}
+            <div className="space-y-6 text-left">
+              <h3 className="text-3xl font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-3 mb-4">
+                <Mail size={30} className="text-blue-600 dark:text-blue-400" /> Direct Contact
+              </h3>
+              <motion.a
+                href="mailto:sanjay.kr.mallick94@gmail.com"
+                className="flex items-center gap-3 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-semibold text-xl transform hover:scale-105 transition-all duration-300 bg-gray-100 dark:bg-gray-700 py-4 px-6 rounded-full shadow-md"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Mail size={28} /> sanjay.kr.mallick94@gmail.com
+              </motion.a>
+              <motion.a
+                href="https://linkedin.com/in/sanjay-kumar-4738b91b1"
+                target="_blank"
+                className="flex items-center gap-3 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-semibold text-xl transform hover:scale-105 transition-all duration-300 bg-gray-100 dark:bg-gray-700 py-4 px-6 rounded-full shadow-md"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Linkedin size={28} /> LinkedIn Profile
+              </motion.a>
+            </div>
+
+            {/* Contact Form */}
+            <div className="space-y-6 text-left">
+              <h3 className="text-3xl font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-3 mb-4">
+                <MessageSquare size={30} className="text-purple-600 dark:text-purple-400" /> Send a Message
+              </h3>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="name" className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="message" className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">Message</label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows="5"
+                    value={formData.message}
+                    onChange={handleChange}
+                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300"
+                    required
+                  ></textarea>
+                </div>
+                <motion.button
+                  type="submit"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  disabled={formStatus === 'sending'}
+                >
+                  {formStatus === 'sending' ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send size={24} /> Send Message
+                    </>
+                  )}
+                </motion.button>
+                {formStatus === 'success' && (
+                  <p className="text-green-600 dark:text-green-400 mt-4 text-center text-lg font-semibold">Message sent successfully! I'll get back to you soon.</p>
+                )}
+                {formStatus === 'error' && (
+                  <p className="text-red-600 dark:text-red-400 mt-4 text-center text-lg font-semibold">Failed to send message. Please try again later.</p>
+                )}
+              </form>
+            </div>
           </div>
         </motion.section>
 
