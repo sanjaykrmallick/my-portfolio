@@ -8,7 +8,12 @@ import { motion } from "framer-motion"; // For smooth and engaging animations
 export default function Home() {
   // State to manage dark mode. Initializes to true to make dark mode the default.
   const [darkMode, setDarkMode] = useState(() => {
-    return true; // Default to dark mode for a sleek initial experience
+    // Attempt to read from localStorage, default to true if not found
+    if (typeof window !== 'undefined') { // Ensure localStorage is only accessed on the client side
+      const savedTheme = localStorage.getItem('theme');
+      return savedTheme === 'dark' || savedTheme === null; // Default to dark if no preference or 'dark' saved
+    }
+    return true; // Default to dark during server-side rendering
   });
 
   // State for contact form
@@ -17,7 +22,7 @@ export default function Home() {
     email: '',
     message: ''
   });
-  const [formStatus, setFormStatus] = useState(''); // 'success', 'error', or ''
+  const [formStatus, setFormStatus] = useState(''); // 'success', 'error', 'sending', or ''
 
   // Effect to apply or remove the 'dark' class on the document element
   useEffect(() => {
@@ -46,27 +51,35 @@ export default function Home() {
     e.preventDefault();
     setFormStatus('sending'); // Indicate sending state
 
-    // Simulate API call for sending email
-    // In a real application, you would send this data to a backend API endpoint
-    // For example:
-    // const response = await fetch('/api/contact', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(formData)
-    // });
-    // if (response.ok) {
-    //   setFormStatus('success');
-    //   setFormData({ name: '', email: '', message: '' }); // Clear form
-    // } else {
-    //   setFormStatus('error');
-    // }
+    // IMPORTANT: For a real Vercel deployment and email sending, you MUST
+    // implement a backend API route (e.g., in `pages/api/contact.ts` or `app/api/contact/route.ts`).
+    // This frontend code alone cannot send emails securely or reliably.
 
-    // Simulating a delay for demonstration
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Example of how you would call a Vercel serverless function (API route):
+    try {
+      const response = await fetch('/api/contact', { // Assuming you create pages/api/contact.ts
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
 
-    // For demonstration, always show success
-    setFormStatus('success');
-    setFormData({ name: '', email: '', message: '' }); // Clear form
+      if (response.ok) {
+        setFormStatus('success');
+        setFormData({ name: '', email: '', message: '' }); // Clear form
+      } else {
+        const errorData = await response.json();
+        console.error('Form submission error:', errorData.message || 'Unknown error');
+        setFormStatus('error');
+      }
+    } catch (error) {
+      console.error('Network or API error:', error);
+      setFormStatus('error');
+    }
+
+    // Original simulation (removed for actual API call, but kept for understanding):
+    // await new Promise(resolve => setTimeout(resolve, 1500));
+    // setFormStatus('success');
+    // setFormData({ name: '', email: '', message: '' }); // Clear form
 
     // Optionally clear status after a few seconds
     setTimeout(() => setFormStatus(''), 5000);
@@ -90,7 +103,7 @@ export default function Home() {
       {/* Dark Mode Toggle Button: Fixed position for easy access */}
       <button
         onClick={toggleDarkMode}
-        className="fixed top-6 right-6 p-3 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 shadow-lg hover:scale-110 transition-transform duration-300 z-50 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-purple-600"
+        className="fixed top-6 right-6 p-3 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 shadow-lg hover:scale-110 transition-transform duration-300 z-50 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-purple-600 cursor-pointer"
         aria-label="Toggle dark mode"
       >
         {darkMode ? <Sun size={24} /> : <Moon size={24} />}
@@ -117,7 +130,7 @@ export default function Home() {
           >
             <Image
               src="/profile pic.jpg" // Path to your uploaded profile picture
-              alt="Sanjay Kumar's profile picture"
+              alt="Sanjay Kumar's professional profile picture" // Improved alt text
               width={192} // Set intrinsic width for Image component (md:w-48 = 192px)
               height={192} // Set intrinsic height for Image component
               className="object-cover w-full h-full" // Tailwind classes for styling
@@ -148,6 +161,7 @@ export default function Home() {
             <motion.a
               href="https://linkedin.com/in/sanjay-kumar-4738b91b1"
               target="_blank"
+              rel="noopener noreferrer" // Added rel="noopener noreferrer" for security
               className="border-2 border-white text-white hover:bg-white hover:text-blue-700 font-extrabold py-4 px-10 rounded-full shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-3 text-lg"
               whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.2)" }}
               whileTap={{ scale: 0.95 }}
@@ -157,6 +171,7 @@ export default function Home() {
             <motion.a
               href="https://github.com/sanjaykrmallick"
               target="_blank"
+              rel="noopener noreferrer" // Added rel="noopener noreferrer" for security
               className="border-2 border-white text-white hover:bg-white hover:text-blue-700 font-extrabold py-4 px-10 rounded-full shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-3 text-lg"
               whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.2)" }}
               whileTap={{ scale: 0.95 }}
@@ -410,6 +425,7 @@ export default function Home() {
               <motion.a
                 href="https://linkedin.com/in/sanjay-kumar-4738b91b1"
                 target="_blank"
+                rel="noopener noreferrer" // Added rel="noopener noreferrer" for security
                 className="flex items-center gap-3 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-semibold text-xl transform hover:scale-105 transition-all duration-300 bg-gray-100 dark:bg-gray-700 py-4 px-6 rounded-full shadow-md"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -453,7 +469,7 @@ export default function Home() {
                   <textarea
                     id="message"
                     name="message"
-                    rows="5"
+                    rows={5} // Corrected: Passed as a number, not a string
                     value={formData.message}
                     onChange={handleChange}
                     className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300"
